@@ -1,0 +1,11 @@
+.DS_Store
+.build/
+.swiftpm/
+Packages/
+*.xcodeproj/
+build/
+HechtTeacher.app/
+*.app/
+.env
+Tools/AppIcon.iconset/
+.claude/settings.local.json
