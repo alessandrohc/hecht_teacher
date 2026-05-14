@@ -37,6 +37,7 @@ final class MainViewController: NSViewController {
         configureTextView(answerTextView, scrollView: answerScrollView, placeholder: "Write your answer in English here. The AI will rewrite it more naturally and explain why.")
         configureTextView(resultTextView, scrollView: resultScrollView, placeholder: "The improved version and the explanations will appear here.")
         resultTextView.isEditable = false
+        resultTextView.isRichText = true
 
         let contextLabel = sectionLabel("1. Context")
         let answerLabel = sectionLabel("2. Your English answer")
@@ -156,21 +157,21 @@ final class MainViewController: NSViewController {
         let attempt = answerTextView.string.trimmingCharacters(in: .whitespacesAndNewlines)
 
         guard !attempt.isEmpty else {
-            resultTextView.string = "Please write something in the “Your English answer” area first."
+            setResult(plain: "Please write something in the “Your English answer” area first.")
             return
         }
 
         refreshModelLabel()
         improveButton.isEnabled = false
         spinner.startAnimation(nil)
-        resultTextView.string = "Asking the model…"
+        setResult(plain: "Asking the model…")
 
         Task { @MainActor in
             do {
                 let response = try await OpenAIClient.shared.improveAnswer(context: context, attempt: attempt)
-                resultTextView.string = response
+                setResult(markdown: response)
             } catch {
-                resultTextView.string = "⚠️ \(error.localizedDescription)"
+                setResult(plain: "⚠️ \(error.localizedDescription)")
             }
             spinner.stopAnimation(nil)
             improveButton.isEnabled = true
@@ -180,6 +181,20 @@ final class MainViewController: NSViewController {
     @objc private func clearTapped() {
         contextTextView.string = ""
         answerTextView.string = ""
-        resultTextView.string = ""
+        setResult(plain: "")
+    }
+
+    private func setResult(markdown source: String) {
+        let attr = MarkdownRenderer.render(source, baseSize: 13)
+        resultTextView.textStorage?.setAttributedString(attr)
+    }
+
+    private func setResult(plain text: String) {
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 13),
+            .foregroundColor: NSColor.labelColor
+        ]
+        let attr = NSAttributedString(string: text, attributes: attrs)
+        resultTextView.textStorage?.setAttributedString(attr)
     }
 }
