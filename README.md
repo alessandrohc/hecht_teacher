@@ -24,7 +24,7 @@ Two features:
 ## Build and install
 
 ```bash
-# Build the .app bundle in ./build/HechtTeacher.app
+# Build the .app bundle in ./build/Me Write Good.app
 make bundle
 
 # Build, then copy to ~/Applications and tell macOS to scan the Services entry
