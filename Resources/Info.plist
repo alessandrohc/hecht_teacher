@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
     <key>CFBundleName</key>
-    <string>Hecht Teacher</string>
+    <string>Me Write Good</string>
     <key>CFBundleDisplayName</key>
-    <string>Hecht Teacher</string>
+    <string>Me Write Good</string>
     <key>CFBundleExecutable</key>
     <string>HechtTeacher</string>
     <key>CFBundleIdentifier</key>

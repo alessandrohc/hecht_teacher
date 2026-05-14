@@ -8,7 +8,7 @@ final class MainWindowController: NSWindowController {
             backing: .buffered,
             defer: false
         )
-        window.title = "Hecht Teacher"
+        window.title = "Me Write Good"
         window.minSize = NSSize(width: 600, height: 500)
         window.center()
         window.contentViewController = MainViewController()

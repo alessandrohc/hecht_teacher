@@ -1,5 +1,5 @@
 APP_NAME       := HechtTeacher
-DISPLAY_NAME   := Hecht Teacher
+DISPLAY_NAME   := Me Write Good
 BUNDLE_ID      := com.hecht.teacher
 BUILD_DIR      := build
 APP_BUNDLE     := $(BUILD_DIR)/$(APP_NAME).app

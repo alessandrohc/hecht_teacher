@@ -1,7 +1,12 @@
-# Hecht Teacher
+# Me Write Good
 
 A small native macOS app that uses the OpenAI API to help you practice and
-improve your English. Two features:
+improve your English. The visible app name is **Me Write Good** (yes, on
+purpose — the grammar mistake is the joke). The project, binary and repo
+keep the historical name `hecht_teacher` / `HechtTeacher` to preserve git
+history and bundle identifier (`com.hecht.teacher`).
+
+Two features:
 
 1. **Main window** — paste a context on top, write your English reply at the
    bottom, and the AI rewrites it more naturally and explains what changed.
@@ -26,7 +31,7 @@ make bundle
 make install
 ```
 
-After `make install`, open **Hecht Teacher** once from `~/Applications` (or
+After `make install`, open **Me Write Good** once from `~/Applications` (or
 double-click the icon in Finder). Open Settings (`⌘,`), paste your OpenAI API
 key, choose a model (default: `gpt-4o-mini`, cheapest), and click Save. The key
 is stored in your macOS Keychain — not in plain files.

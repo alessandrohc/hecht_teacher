@@ -4,7 +4,7 @@ final class PopoverPanel: NSPanel {
 
     private let textView = NSTextView()
     private let scrollView = NSScrollView()
-    private let titleLabel = NSTextField(labelWithString: "Hecht Teacher")
+    private let titleLabel = NSTextField(labelWithString: "Me Write Good")
     private let spinner = NSProgressIndicator()
     private let closeButton = NSButton(title: "✕", target: nil, action: nil)
 
@@ -15,7 +15,7 @@ final class PopoverPanel: NSPanel {
             backing: .buffered,
             defer: false
         )
-        self.title = "Hecht Teacher"
+        self.title = "Me Write Good"
         self.level = .floating
         self.isFloatingPanel = true
         self.hidesOnDeactivate = false
@@ -83,7 +83,7 @@ final class PopoverPanel: NSPanel {
     }
 
     func showLoading(near point: NSPoint, for snippet: String) {
-        titleLabel.stringValue = "Coaching “\(snippet.prefix(40))\(snippet.count > 40 ? "…" : "")”"
+        titleLabel.stringValue = "Teaching “\(snippet.prefix(40))\(snippet.count > 40 ? "…" : "")”"
         textView.string = "Asking the model…"
         spinner.startAnimation(nil)
         position(near: point)
