@@ -6,7 +6,13 @@ enum Settings {
     private static let teachPromptKey = "teach_system_prompt"
     private static let improveTempKey = "improve_temperature"
     private static let teachTempKey = "teach_temperature"
+    private static let menuBarModeKey = "run_as_menu_bar_app"
     private static let defaultModel = "gpt-4o-mini"
+
+    static var runAsMenuBarApp: Bool {
+        get { UserDefaults.standard.bool(forKey: menuBarModeKey) }
+        set { UserDefaults.standard.set(newValue, forKey: menuBarModeKey) }
+    }
 
     static let defaultImproveTemperature: Double = 0.4
     static let defaultTeachTemperature: Double = 0.3

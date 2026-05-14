@@ -22,6 +22,9 @@ final class SettingsViewController: NSViewController {
 
     private let apiKeyField = NSSecureTextField()
     private let modelPopup = NSPopUpButton()
+    private let menuBarToggle = NSButton(checkboxWithTitle: "Run as menu-bar app (no Dock icon)", target: nil, action: nil)
+    private let restartHint = NSTextField(labelWithString: "")
+    private var initialMenuBarMode: Bool = Settings.runAsMenuBarApp
 
     private let improvePromptTextView = NSTextView()
     private let improvePromptScroll = NSScrollView()
@@ -39,6 +42,7 @@ final class SettingsViewController: NSViewController {
         let root = NSView(frame: NSRect(x: 0, y: 0, width: 640, height: 560))
 
         tabView.translatesAutoresizingMaskIntoConstraints = false
+        tabView.addTabViewItem(makeGeneralTab())
         tabView.addTabViewItem(makeAPITab())
         tabView.addTabViewItem(makePromptsTab())
 
@@ -71,6 +75,52 @@ final class SettingsViewController: NSViewController {
         ])
 
         self.view = root
+    }
+
+    // MARK: - General tab
+
+    private func makeGeneralTab() -> NSTabViewItem {
+        let item = NSTabViewItem(identifier: "general")
+        item.label = "General"
+
+        let container = NSView()
+
+        let title = NSTextField(labelWithString: "Behavior")
+        title.font = NSFont.systemFont(ofSize: 15, weight: .semibold)
+
+        menuBarToggle.state = Settings.runAsMenuBarApp ? .on : .off
+        menuBarToggle.target = self
+        menuBarToggle.action = #selector(menuBarToggleChanged)
+
+        let toggleHint = NSTextField(labelWithString: "When enabled, the app lives only in the menu bar (top-right of the screen) and has no Dock icon. Click the menu-bar icon to open the main window, Settings, or quit.")
+        toggleHint.font = NSFont.systemFont(ofSize: 11)
+        toggleHint.textColor = .secondaryLabelColor
+        toggleHint.maximumNumberOfLines = 4
+
+        restartHint.font = NSFont.systemFont(ofSize: 11, weight: .medium)
+        restartHint.textColor = .systemOrange
+        restartHint.stringValue = ""
+        restartHint.maximumNumberOfLines = 2
+
+        let stack = NSStackView(views: [title, menuBarToggle, toggleHint, restartHint])
+        stack.orientation = .vertical
+        stack.alignment = .leading
+        stack.spacing = 10
+        stack.edgeInsets = NSEdgeInsets(top: 14, left: 14, bottom: 14, right: 14)
+        stack.translatesAutoresizingMaskIntoConstraints = false
+
+        container.addSubview(stack)
+        NSLayoutConstraint.activate([
+            stack.leadingAnchor.constraint(equalTo: container.leadingAnchor),
+            stack.trailingAnchor.constraint(equalTo: container.trailingAnchor),
+            stack.topAnchor.constraint(equalTo: container.topAnchor),
+
+            toggleHint.widthAnchor.constraint(lessThanOrEqualToConstant: 540),
+            restartHint.widthAnchor.constraint(lessThanOrEqualToConstant: 540),
+        ])
+
+        item.view = container
+        return item
     }
 
     // MARK: - API tab
@@ -301,7 +351,25 @@ final class SettingsViewController: NSViewController {
         Settings.teachPrompt = teachPromptTextView.string
         Settings.improveTemperature = improveTempSlider.doubleValue
         Settings.teachTemperature = teachTempSlider.doubleValue
+
+        let newMenuBarMode = menuBarToggle.state == .on
+        Settings.runAsMenuBarApp = newMenuBarMode
+        if newMenuBarMode != initialMenuBarMode {
+            restartHint.stringValue = "⚠︎ Quit and relaunch Me Write Good for the menu-bar setting to take effect."
+        } else {
+            restartHint.stringValue = ""
+        }
+
         statusLabel.stringValue = "Saved at \(timestamp())."
+    }
+
+    @objc private func menuBarToggleChanged() {
+        let newMenuBarMode = menuBarToggle.state == .on
+        if newMenuBarMode != initialMenuBarMode {
+            restartHint.stringValue = "Click Save, then quit and relaunch Me Write Good for this change to take effect."
+        } else {
+            restartHint.stringValue = ""
+        }
     }
 
     @objc private func resetImprove() {

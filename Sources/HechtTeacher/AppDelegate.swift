@@ -4,6 +4,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
 
     private var mainWindowController: MainWindowController?
     private var settingsWindowController: SettingsWindowController?
+    private var statusItem: NSStatusItem?
     private let serviceProvider = ServiceProvider()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
@@ -12,11 +13,54 @@ final class AppDelegate: NSObject, NSApplicationDelegate {
         NSApp.servicesProvider = serviceProvider
         NSUpdateDynamicServices()
 
-        showMainWindow()
+        if Settings.runAsMenuBarApp {
+            setUpStatusItem()
+        } else {
+            showMainWindow()
+        }
 
         if Settings.apiKey == nil {
             showSettings()
         }
+    }
+
+    private func setUpStatusItem() {
+        let item = NSStatusBar.system.statusItem(withLength: NSStatusItem.variableLength)
+        if let button = item.button {
+            button.toolTip = "Me Write Good"
+            if let img = NSImage(systemSymbolName: "abc", accessibilityDescription: "Me Write Good") {
+                img.isTemplate = true
+                button.image = img
+                button.imagePosition = .imageOnly
+            } else {
+                button.title = "Aa"
+                button.font = NSFont.systemFont(ofSize: 13, weight: .semibold)
+                button.imagePosition = .noImage
+            }
+        }
+
+        let menu = NSMenu()
+
+        let openItem = NSMenuItem(title: "Open Me Write Good",
+                                  action: #selector(showMainWindow),
+                                  keyEquivalent: "")
+        openItem.target = self
+        menu.addItem(openItem)
+        menu.addItem(.separator())
+
+        let settingsItem = NSMenuItem(title: "Settings…",
+                                      action: #selector(showSettings),
+                                      keyEquivalent: ",")
+        settingsItem.target = self
+        menu.addItem(settingsItem)
+        menu.addItem(.separator())
+
+        menu.addItem(withTitle: "Quit Me Write Good",
+                     action: #selector(NSApplication.terminate(_:)),
+                     keyEquivalent: "q")
+
+        item.menu = menu
+        self.statusItem = item
     }
 
     func applicationShouldHandleReopen(_ sender: NSApplication, hasVisibleWindows flag: Bool) -> Bool {

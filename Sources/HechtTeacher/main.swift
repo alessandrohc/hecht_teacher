@@ -3,6 +3,12 @@ import AppKit
 let app = NSApplication.shared
 let delegate = AppDelegate()
 app.delegate = delegate
-app.setActivationPolicy(.regular)
-app.activate(ignoringOtherApps: true)
+
+if Settings.runAsMenuBarApp {
+    app.setActivationPolicy(.accessory)
+} else {
+    app.setActivationPolicy(.regular)
+    app.activate(ignoringOtherApps: true)
+}
+
 app.run()
