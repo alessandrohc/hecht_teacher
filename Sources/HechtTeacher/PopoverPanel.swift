@@ -50,7 +50,7 @@ final class PopoverPanel: NSPanel {
         textView.isSelectable = true
         textView.font = NSFont.systemFont(ofSize: 13)
         textView.textContainerInset = NSSize(width: 8, height: 8)
-        textView.isRichText = false
+        textView.isRichText = true
         textView.drawsBackground = false
 
         scrollView.documentView = textView
@@ -84,7 +84,7 @@ final class PopoverPanel: NSPanel {
 
     func showLoading(near point: NSPoint, for snippet: String) {
         titleLabel.stringValue = "Teaching “\(snippet.prefix(40))\(snippet.count > 40 ? "…" : "")”"
-        textView.string = "Asking the model…"
+        setPlain("Asking the model…")
         spinner.startAnimation(nil)
         position(near: point)
         orderFrontRegardless()
@@ -92,12 +92,21 @@ final class PopoverPanel: NSPanel {
 
     func show(result: String) {
         spinner.stopAnimation(nil)
-        textView.string = result
+        let attr = MarkdownRenderer.render(result, baseSize: 13)
+        textView.textStorage?.setAttributedString(attr)
     }
 
     func showError(_ message: String) {
         spinner.stopAnimation(nil)
-        textView.string = "⚠️ " + message
+        setPlain("⚠️ " + message)
+    }
+
+    private func setPlain(_ text: String) {
+        let attrs: [NSAttributedString.Key: Any] = [
+            .font: NSFont.systemFont(ofSize: 13),
+            .foregroundColor: NSColor.labelColor
+        ]
+        textView.textStorage?.setAttributedString(NSAttributedString(string: text, attributes: attrs))
     }
 
     private func position(near point: NSPoint) {
